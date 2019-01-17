@@ -2,9 +2,10 @@
 title: "Course Project 1"
 output:
   html_document:
-    df_print: paged
+    keep_md: yes
 ---
-```{r setoptions}
+
+```r
 # libraries needed
 ## knitr
 library(knitr)
@@ -35,13 +36,24 @@ The variables included in this dataset are:
 The dataset is stored in a comma-separated-value (CSV) file and there are a total of 17,568 observations in this dataset.
 
 
-```{r}
+
+```r
 # load data
 ## load everything as character, transform as needed
 actv <- read.csv("activity.csv", colClasses = "character")
 
 ## check it out
 head(actv)
+```
+
+```
+##   steps       date interval
+## 1  <NA> 2012-10-01        0
+## 2  <NA> 2012-10-01        5
+## 3  <NA> 2012-10-01       10
+## 4  <NA> 2012-10-01       15
+## 5  <NA> 2012-10-01       20
+## 6  <NA> 2012-10-01       25
 ```
 
 
@@ -53,7 +65,8 @@ For this part of the assignment, you can ignore the missing values in the datase
     - If you do not understand the difference between a histogram and a barplot, research the difference between them. Make a histogram of the total number of steps taken each day
     - Calculate and report the mean and median of the total number of steps taken per day
 
-```{r}
+
+```r
 # filter data
 ## removing das
 data <- actv[complete.cases(actv$steps), ]
@@ -67,6 +80,19 @@ data$interval <- as.numeric(data$interval)
 ## total steps per day
 total.steps <- aggregate(data$steps, list(data$date), sum)
 head(total.steps)
+```
+
+```
+##      Group.1     x
+## 1 2012-10-02   126
+## 2 2012-10-03 11352
+## 3 2012-10-04 12116
+## 4 2012-10-05 13294
+## 5 2012-10-06 15420
+## 6 2012-10-07 11015
+```
+
+```r
 #
 ## mean steps per day (for group data)
 # class.weights <- total.steps$x / sum(total.steps$x) # class weights/probabilites
@@ -88,12 +114,14 @@ qplot(data = total.steps,
       main = "Steps per day:\nHistogram") + theme_minimal()
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
 
 ### Report
 
-	* Mean number of steps per day: `r as.character(round(mean.steps, 0))`
+	* Mean number of steps per day: 10766
 
-	* Median number of steps per day: `r as.character(round(med.steps, 0))`
+	* Median number of steps per day: 10765
 
 From the histogram, we can see the most of the days people walked around 10 000 steps, this interval is also where the median is and  there are at least 15 days within. The mean is slightly bigger.
 
@@ -103,7 +131,8 @@ From the histogram, we can see the most of the days people walked around 10 000 
     - Make a time series plot (i.e. type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
     - Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
     
-```{r}
+
+```r
 # processing
 ## average steps per interval, days will average consequently
 steps.interval <- with(data, aggregate(steps, list(interval), mean))
@@ -122,9 +151,11 @@ qplot(data = steps.interval,
 	theme_minimal()
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
 ### Report
 
-The data was averaged across all days. The graph suggests the maximum activity somewhere between 750-1000 minutes. The precise value is `r as.character(round(max.steps, 0))` minutes of observation.
+The data was averaged across all days. The graph suggests the maximum activity somewhere between 750-1000 minutes. The precise value is 835 minutes of observation.
 
 
 ## Imputing missing values
@@ -136,7 +167,8 @@ Note that there are a number of days/intervals where there are missing values (c
     - Create a new dataset that is equal to the original dataset but with the missing data filled in.
     - Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
     
-```{r}
+
+```r
 # processing
 ## new data
 data <- actv
@@ -182,12 +214,13 @@ qplot(data = total.steps,
       # fill = factor(Group.1), # uncoment to the days as colours (groovy)
       xlab = "Steps", ylab = "Days",
       main = "Steps per day:\nHistogram") + theme_minimal()
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
 ### Report
 
-The number of missing values is `r as.character(round(missing, 0))`. The NAs were replaced with the proper mean for each interval. The mean changed to `r as.character(round(mean.steps, 0))` whereas the median remained the same in `r as.character(round(med.steps, 0))`. This was a great impact in the initial estimation. This is mostly due to day 1 having nearly no data.
+The number of missing values is 2304. The NAs were replaced with the proper mean for each interval. The mean changed to 10766 whereas the median remained the same in 10766. This was a great impact in the initial estimation. This is mostly due to day 1 having nearly no data.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -196,7 +229,8 @@ For this part the weekdays() function may be of some help here. Use the dataset 
    - Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
    - Make a panel plot containing a time series plot (i.e. type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
     
-```{r}
+
+```r
 # processing
 ## creating a vector of weekdays
 weekdays <- ifelse(weekdays(data$date) %in% c("domingo", "sábado"), "weekend", "workday")
@@ -218,6 +252,8 @@ qplot(data = steps.interval,
       ylab = "Mean Steps") +
 	theme_minimal()
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 ### Report
 

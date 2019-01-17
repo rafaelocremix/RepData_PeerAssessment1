@@ -2,7 +2,7 @@
 title: "Course Project 1"
 output:
   html_document:
-    df_print: paged
+    keep_md: yes
 ---
 ```{r setoptions}
 # libraries needed
